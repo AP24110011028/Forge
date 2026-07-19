@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Forge",
+  "version": "1.0.0",
+  "identifier": "com.pujiflow.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev -- --port 1420",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [{
+      "title": "Forge",
+      "width": 1440,
+      "height": 920,
+      "minWidth": 1024,
+      "minHeight": 700,
+      "resizable": true,
+      "fullscreen": false,
+      "center": true
+    }],
+    "security": { "csp": "default-src 'self'; img-src 'self' asset: data:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost" }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["app", "dmg"],
+    "category": "Productivity",
+    "shortDescription": "Private, offline-first daily productivity system",
+    "longDescription": "Forge combines habits, daily actions, academics, focus, projects and reflection without accounts or cloud services.",
+    "macOS": { "minimumSystemVersion": "11.0" }
+  }
+}

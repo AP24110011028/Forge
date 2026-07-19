@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Local Forge desktop capabilities",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "sql:default",
+    "sql:allow-execute",
+    "sql:allow-select",
+    "notification:default",
+    "dialog:default",
+    "fs:default"
+  ]
+}
+

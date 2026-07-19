@@ -1,0 +1,16 @@
+export type Category = 'GATE'|'College'|'AI Roadmap'|'Health'|'Personal'|'Family'|'GitHub'|'Bus Study'|'Other'
+export type Habit = { id?: number; name:string; category:Category; icon:string; description:string; schedule:'daily'|'weekdays'|'monthly'|'custom'; weekdays:number[]; customDates?:string[]; weeklyTarget:number; startDate:string; endDate?:string; reminder?:string; color:string; archived:boolean; createdAt:string }
+export type Completion = { id?:number; habitId:number; date:string; status:'complete'|'skipped'; note:string }
+export type ActionStatus='Not Started'|'In Progress'|'Done'|'Frozen'|'Skipped'|'Missed'
+export type DailyAction={id?:number;habitId?:number;date:string;title:string;category:Category;checklist:string[];checklistDone:number[];topic:string;module:string;resource:string;expectedOutput:string;evidence:string;estimatedMinutes:number;actualMinutes:number;priority:'Low'|'Medium'|'High'|'Critical';energy:'Low'|'Medium'|'High';timeBlock:string;status:ActionStatus;completedAt?:string;notes:string;focusQuality?:number;difficulty?:number;xpReward:number;optional:boolean}
+export type XPEvent={id?:number;sourceKey:string;amount:number;category:string;description:string;occurredAt:string}
+export type FocusSession={id?:number;actionId?:number;startedAt:string;endedAt?:string;plannedMinutes:number;actualSeconds:number;status:'Completed'|'Abandoned';notes:string;interruptions:string[]}
+export type HabitFreeze = { id?:number; habitId:number; month:string; date:string; createdAt:string }
+export type GateSubject = { id?:number; name:string; lectures:number; totalLectures:number; dpp:number; dppPending:number; pyqs:number; tests:number; scores:string; revision:boolean; notes:string }
+export type RoadmapWeek = { id?:number; week:number; month:number; title:string; topics:string[]; completedTopics:string[]; resources?:string; build:string; buildDone:boolean; status:'Not started'|'Learning'|'Complete'; notes:string; github:string; startDate:string; completionDate:string }
+export type BacklogDay = { id?:number; day:number; pending:boolean; current:boolean; dpp:boolean; revision?:boolean; test?:boolean; notes:string }
+export type CollegeSubject = { id?:number; name:string; credits:number; attendance:number; assignments:number; labs?:number; internalMarks:number; gradePoint?:number; examDate:string; notes:string; weeklyTarget:number; progress:number }
+export type Project = { id?:number; title:string; category:string; description:string; status:string; priority:string; techStack:string; github:string; demo:string; dataset:string; paper:string; startDate:string; deadline:string; tasks:string; progress:number; notes:string }
+export type PlannerItem = { id?:number; kind:string; date:string; title:string; category:string; hours:number; done:boolean; notes:string }
+export type KnowledgeItem = { id?:number; title:string; source:'MIT'|'Stanford'|'Paper'|'TerraMind'|'Research'|'Notes'; status:'Queued'|'Learning'|'Complete'; url:string; notes:string; progress:number; createdAt:string }
+export type Review = { id?:number; period:'weekly'|'monthly'; key:string; wins:string; challenges:string; lessons:string; nextFocus:string; score:number; updatedAt:string }

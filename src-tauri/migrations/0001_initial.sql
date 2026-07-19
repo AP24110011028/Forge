@@ -1,0 +1,30 @@
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS app_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS habits (id INTEGER PRIMARY KEY, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS habit_schedules (id INTEGER PRIMARY KEY, habit_id INTEGER NOT NULL REFERENCES habits(id) ON DELETE CASCADE, rule TEXT NOT NULL, weekdays TEXT, start_date TEXT NOT NULL, end_date TEXT);
+CREATE TABLE IF NOT EXISTS daily_actions (id INTEGER PRIMARY KEY, habit_id INTEGER REFERENCES habits(id) ON DELETE SET NULL, action_date TEXT NOT NULL, title TEXT NOT NULL, category TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'Not Started', estimated_minutes INTEGER NOT NULL DEFAULT 0, actual_minutes INTEGER NOT NULL DEFAULT 0, priority TEXT NOT NULL DEFAULT 'Medium', energy TEXT NOT NULL DEFAULT 'Medium', time_block TEXT NOT NULL DEFAULT 'Flexible', xp_reward INTEGER NOT NULL DEFAULT 0, payload TEXT NOT NULL DEFAULT '{}', completed_at TEXT);
+CREATE INDEX IF NOT EXISTS idx_actions_date_status ON daily_actions(action_date, status);
+CREATE TABLE IF NOT EXISTS action_checklist_items (id INTEGER PRIMARY KEY, action_id INTEGER NOT NULL REFERENCES daily_actions(id) ON DELETE CASCADE, title TEXT NOT NULL, done INTEGER NOT NULL DEFAULT 0, position INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS habit_results (id INTEGER PRIMARY KEY, habit_id INTEGER NOT NULL REFERENCES habits(id) ON DELETE CASCADE, result_date TEXT NOT NULL, status TEXT NOT NULL, note TEXT NOT NULL DEFAULT '', actual_minutes INTEGER NOT NULL DEFAULT 0, evidence TEXT, UNIQUE(habit_id, result_date));
+CREATE TABLE IF NOT EXISTS freeze_usage (id INTEGER PRIMARY KEY, habit_id INTEGER NOT NULL REFERENCES habits(id) ON DELETE CASCADE, month TEXT NOT NULL, result_date TEXT NOT NULL, UNIQUE(habit_id, month));
+CREATE TABLE IF NOT EXISTS xp_events (id INTEGER PRIMARY KEY, source_key TEXT NOT NULL UNIQUE, amount INTEGER NOT NULL, category TEXT NOT NULL, description TEXT NOT NULL, occurred_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_xp_occurred ON xp_events(occurred_at);
+CREATE TABLE IF NOT EXISTS focus_sessions (id INTEGER PRIMARY KEY, action_id INTEGER REFERENCES daily_actions(id) ON DELETE SET NULL, started_at TEXT NOT NULL, ended_at TEXT, planned_minutes INTEGER NOT NULL, actual_seconds INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL, quality INTEGER, notes TEXT NOT NULL DEFAULT '', interruptions TEXT NOT NULL DEFAULT '[]');
+CREATE TABLE IF NOT EXISTS achievements (id TEXT PRIMARY KEY, payload TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS achievement_unlocks (achievement_id TEXT PRIMARY KEY REFERENCES achievements(id), unlocked_at TEXT NOT NULL, xp_event_id INTEGER REFERENCES xp_events(id));
+CREATE TABLE IF NOT EXISTS challenges (id INTEGER PRIMARY KEY, period TEXT NOT NULL, title TEXT NOT NULL, starts_on TEXT NOT NULL, ends_on TEXT NOT NULL, target INTEGER NOT NULL, progress INTEGER NOT NULL DEFAULT 0, reward_xp INTEGER NOT NULL, payload TEXT NOT NULL DEFAULT '{}');
+CREATE TABLE IF NOT EXISTS schedule_presets (id INTEGER PRIMARY KEY, name TEXT NOT NULL, payload TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS gate_subjects (id INTEGER PRIMARY KEY, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS roadmap_weeks (id INTEGER PRIMARY KEY, week_number INTEGER NOT NULL UNIQUE, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS roadmap_items (id INTEGER PRIMARY KEY, week_id INTEGER NOT NULL REFERENCES roadmap_weeks(id) ON DELETE CASCADE, planned_date TEXT, status TEXT NOT NULL, payload TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_roadmap_items_date ON roadmap_items(planned_date);
+CREATE TABLE IF NOT EXISTS semester_subjects (id INTEGER PRIMARY KEY, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS projects (id INTEGER PRIMARY KEY, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS learning_resources (id INTEGER PRIMARY KEY, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS planner_items (id INTEGER PRIMARY KEY, item_date TEXT NOT NULL, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS idx_planner_date ON planner_items(item_date);
+CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY, period TEXT NOT NULL, period_key TEXT NOT NULL, payload TEXT NOT NULL, updated_at TEXT NOT NULL, UNIQUE(period, period_key));
+CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS local_snapshots (id INTEGER PRIMARY KEY CHECK (id = 1), schema_version INTEGER NOT NULL, payload TEXT NOT NULL, updated_at TEXT NOT NULL);
+
